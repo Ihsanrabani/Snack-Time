@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+      <section class="flex items-center flex-col gap-5 my-10">
+        <h1 class="text-4xl font-bold">Pre-Order</h1>
+
+        <div class="">
+          <button class="bg-blue-500 p-2 rounded-md text-white hover:bg-blue-500/95">
+              <a href="index.html">Home</a>
+          </button>
+          <button class="bg-blue-500 p-2 rounded-md text-white hover:bg-blue-500/95" >
+              <a href="menu.html">Menu</a>
+          </button>
+        </div>
+
+
+        <form method="POST" id="form" class="flex flex-col border border-gray-600/60 p-9 rounded-md">
+
+          <input type="hidden" name="access_key" value="d6abb4fe-54be-43bd-8579-79e93af4dc93">
+          
+          <label for="name">Nama:</label>
+          <input class="border border-gray-500' p-2 rounded-md mb-3" placeholder="Masukkan Nama kamu!" type="text" name="name" required>
+
+          <label for="message">Pesanan</label>
+          <textarea class="border border-gray-500"name="message" placeholder="Mau Pesan Apa?" required></textarea>
+
+          <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+      
+          <button type="submit" class="bg-blue-500 p-2 rounded-md text-xl text-white mt-4">Kirim</button>
+      
+          <div id="result"></div>
+      
+      </form>
+      </section>
+
+      <script>
+        const form = document.getElementById('form');
+        const result = document.getElementById('result');
+        
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const formData = new FormData(form);
+          const object = Object.fromEntries(formData);
+          const json = JSON.stringify(object);
+          result.innerHTML = "Please wait..."
+        
+            fetch('https://api.web3forms.com/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: json
+                })
+                .then(async (response) => {
+                    let json = await response.json();
+                    if (response.status == 200) {
+                        result.innerHTML = "Form submitted successfully";
+                    } else {
+                        console.log(response);
+                        result.innerHTML = json.message;
+                    }
+                })
+                .catch(error => {
+                    console.log(error);
+                    result.innerHTML = "Something went wrong!";
+                })
+                .then(function() {
+                    form.reset();
+                    setTimeout(() => {
+                        result.style.display = "none";
+                    }, 3000);
+                });
+        });
+      </script>        
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+</body>
+</html>
